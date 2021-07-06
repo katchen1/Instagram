@@ -59,4 +59,12 @@
         android:layout_below="@id/ivPostImage"
         android:text="Submit" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnFeed"
+        android:layout_below="@id/btnSubmit"
+        android:onClick="feedOnClick"
+        android:text="Feed"/>
+
 </RelativeLayout>
