@@ -1,7 +1,6 @@
 package com.example.instagram;
 
 import android.app.Application;
-
 import com.example.instagram.models.Post;
 import com.parse.Parse;
 import com.parse.ParseObject;
@@ -11,9 +10,10 @@ public class ParseApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // Register your parse models
+        // Register the parse models
         ParseObject.registerSubclass(Post.class);
 
+        // Initialize the parse application
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("50GBXVQnFLUiUQJoDN6vA0qt5WofLHepioBxnDYr")
                 .clientKey("MzB58Px4Xay8dHQHiVRe70UQy1dQ4GSEjIeOHWtx")

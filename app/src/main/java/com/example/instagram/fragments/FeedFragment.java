@@ -2,25 +2,19 @@ package com.example.instagram.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
+import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import com.example.instagram.EndlessRecyclerViewScrollListener;
 import com.example.instagram.databinding.FragmentFeedBinding;
 import com.example.instagram.models.Post;
-import com.example.instagram.R;
 import com.example.instagram.adapters.PostsAdapter;
-import com.parse.FindCallback;
-import com.parse.ParseException;
 import com.parse.ParseQuery;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +22,9 @@ public class FeedFragment extends Fragment {
 
     public static final String TAG = "FeedActivity";
     protected PostsAdapter adapter;
-    private SwipeRefreshLayout swipeContainer;
     protected List<Post> allPosts;
     FragmentFeedBinding binding;
-
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -43,95 +36,50 @@ public class FeedFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // initialize the array that will hold posts and create a PostsAdapter
+        // Initialize the array that will hold posts and create a PostsAdapter
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         allPosts = new ArrayList<>();
         adapter = new PostsAdapter(getActivity(), allPosts);
         binding.rvPosts.setAdapter(adapter);
-        binding.rvPosts.setLayoutManager(new LinearLayoutManager(getActivity()));
-        queryPosts();
+        binding.rvPosts.setLayoutManager(linearLayoutManager);
+        queryPosts(0);
 
         // Setup refresh listener which triggers new data loading
         binding.swipeContainer.setOnRefreshListener(() -> {
-            fetchTimelineAsync(0);
+            allPosts.clear();
+            queryPosts(0);
+            binding.swipeContainer.setRefreshing(false);
         });
 
         // Configure the refreshing colors
-        binding.swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-    }
+        binding.swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        ActivityFeedBinding binding = ActivityFeedBinding.inflate(getLayoutInflater());
-//        setContentView(binding.getRoot());
-//
-//        // initialize the array that will hold posts and create a PostsAdapter
-//        allPosts = new ArrayList<>();
-//        adapter = new PostsAdapter(this, allPosts);
-//
-//        // set the adapter on the recycler view
-//        binding.rvPosts.setAdapter(adapter);
-//        // set the layout manager on the recycler view
-//        binding.rvPosts.setLayoutManager(new LinearLayoutManager(this));
-//        // query posts from Parstagram
-//        queryPosts();
-//
-//        // lookup the swipe container view
-//        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-//        // Setup refresh listener which triggers new data loading
-//        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                // Your code to refresh the list here.
-//                // Make sure you call swipeContainer.setRefreshing(false)
-//                // once the network request has completed successfully.
-//                fetchTimelineAsync(0);
-//            }
-//        });
-//        // Configure the refreshing colors
-//        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-//                android.R.color.holo_green_light,
-//                android.R.color.holo_orange_light,
-//                android.R.color.holo_red_light);
-//    }
-
-    public void fetchTimelineAsync(int page) {
-        adapter.clear();
-        queryPosts();
-        binding.swipeContainer.setRefreshing(false);
-    }
-
-    private void queryPosts() {
-        // specify what type of data we want to query - Post.class
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        // include data referred by user key
-        query.include(Post.KEY_USER);
-        // limit query to latest 20 items
-        query.setLimit(20);
-        // order posts by creation date (newest first)
-        query.addDescendingOrder("createdAt");
-        // start an asynchronous call for posts
-        query.findInBackground(new FindCallback<Post>() {
+        // Endless scrolling
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
-            public void done(List<Post> posts, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
-                    return;
-                }
-
-                // for debugging purposes let's print every post description to logcat
-                for (Post post : posts) {
-                    Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
-                }
-
-                // save received posts to list and notify adapter of new data
-                allPosts.addAll(posts);
-                adapter.notifyDataSetChanged();
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                queryPosts(allPosts.size());
             }
+        };
+        binding.rvPosts.addOnScrollListener(scrollListener);
+    }
+
+    private void queryPosts(int skip) {
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class); // specify type of data
+        query.include(Post.KEY_USER); // include data referred by user key
+        query.setSkip(skip); // skip the first skip items
+        query.setLimit(20); // limit query to 20 items
+        query.addDescendingOrder("createdAt"); // order posts by creation date
+        query.findInBackground((posts, e) -> { // start async query for posts
+            // Check for errors
+            if (e != null) {
+                Log.e(TAG, "Issue with getting posts", e);
+                return;
+            }
+
+            // Save received posts to list and notify adapter of new data
+            allPosts.addAll(posts);
+            adapter.notifyDataSetChanged();
         });
     }
 }
