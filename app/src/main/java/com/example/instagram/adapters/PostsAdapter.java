@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.instagram.Post;
-import com.example.instagram.PostDetailActivity;
+import com.example.instagram.models.Post;
+import com.example.instagram.activities.PostDetailActivity;
 import com.example.instagram.databinding.ItemPostBinding;
 import com.parse.ParseFile;
 import java.util.List;

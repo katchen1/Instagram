@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_feed"
+        android:enabled="true"
+        android:icon="@drawable/instagram_home_outline_24"
+        android:checked="true"
+        android:title="Home"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_capture"
+        android:enabled="true"
+        android:icon="@drawable/instagram_new_post_outline_24"
+        android:title="Capture"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_profile"
+        android:enabled="true"
+        android:icon="@drawable/instagram_user_outline_24"
+        android:title="Profile"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -33,6 +33,12 @@ android {
     }
 }
 
+ext {
+    appCompatVersion = '1.0.0'
+    designSupportVersion = '1.0.0'
+    recyclerViewVersion = '1.0.0'
+}
+
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.3.0'
@@ -59,4 +65,7 @@ dependencies {
     // Parcelable
     implementation 'org.parceler:parceler-api:1.1.12'
     annotationProcessor 'org.parceler:parceler:1.1.12'
+
+    // Bottom navigation
+    implementation 'com.google.android.material:material:1.0.0'
 }

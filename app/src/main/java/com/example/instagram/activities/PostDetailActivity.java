@@ -1,9 +1,10 @@
-package com.example.instagram;
+package com.example.instagram.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.bumptech.glide.Glide;
 import com.example.instagram.databinding.ActivityPostDetailBinding;
+import com.example.instagram.models.Post;
 import com.parse.ParseFile;
 
 public class PostDetailActivity extends AppCompatActivity {

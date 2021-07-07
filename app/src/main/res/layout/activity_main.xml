@@ -1,70 +1,83 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    tools:context=".activities.MainActivity">-->
+
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="?attr/actionBarSize"-->
+<!--        android:background="?attr/colorPrimary"-->
+<!--        app:titleTextColor="@color/white"-->
+<!--        app:layout_scrollFlags="scroll|enterAlways"-->
+<!--        tools:ignore="MissingConstraints">-->
+<!--        <ImageView-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:src="@drawable/icon" />-->
+<!--        <ImageView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:src="@drawable/nav_logo_whiteout" />-->
+<!--        <Button-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/btnLogout"-->
+<!--            android:text="logout"-->
+<!--            android:onClick="logoutOnClick"/>-->
+<!--    </androidx.appcompat.widget.Toolbar>-->
+
+<!--    <EditText-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/etDescription"-->
+<!--        android:layout_below="@id/toolbar"-->
+<!--        android:ems="10"-->
+<!--        android:hint="Description..."/>-->
+
+<!--    <Button-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/btnCaptureImage"-->
+<!--        android:layout_below="@id/etDescription"-->
+<!--        android:text="Take Picture"/>-->
+
+<!--    <ImageView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="200dp"-->
+<!--        android:id="@+id/ivPostImage"-->
+<!--        android:layout_below="@id/btnCaptureImage"-->
+<!--        tools:srcCompat="@tools:sample/avatars"/>-->
+
+<!--    <Button-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/btnSubmit"-->
+<!--        android:layout_below="@id/ivPostImage"-->
+<!--        android:text="Submit" />-->
+
+<!--    <Button-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/btnFeed"-->
+<!--        android:layout_below="@id/btnSubmit"-->
+<!--        android:onClick="feedOnClick"-->
+<!--        android:text="Feed"/>-->
+
+<!--</RelativeLayout>-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:id="@+id/fragmentContainer"
+    android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:titleTextColor="@color/white"
-        app:layout_scrollFlags="scroll|enterAlways"
-        tools:ignore="MissingConstraints">
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/icon" />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:src="@drawable/nav_logo_whiteout" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnLogout"
-            android:text="logout"
-            android:onClick="logoutOnClick"/>
-    </androidx.appcompat.widget.Toolbar>
-
-    <EditText
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etDescription"
-        android:layout_below="@id/toolbar"
-        android:ems="10"
-        android:hint="Description..."/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnCaptureImage"
-        android:layout_below="@id/etDescription"
-        android:text="Take Picture"/>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/ivPostImage"
-        android:layout_below="@id/btnCaptureImage"
-        tools:srcCompat="@tools:sample/avatars"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnSubmit"
-        android:layout_below="@id/ivPostImage"
-        android:text="Submit" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnFeed"
-        android:layout_below="@id/btnSubmit"
-        android:onClick="feedOnClick"
-        android:text="Feed"/>
-
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/menu_bottom_navigation" />
 </RelativeLayout>
