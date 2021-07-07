@@ -2,6 +2,7 @@ package com.example.instagram;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
@@ -23,6 +24,7 @@ public class FeedActivity extends AppCompatActivity {
     protected PostsAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
     protected List<Post> allPosts;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +39,10 @@ public class FeedActivity extends AppCompatActivity {
         // set the adapter on the recycler view
         binding.rvPosts.setAdapter(adapter);
         // set the layout manager on the recycler view
-        binding.rvPosts.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        binding.rvPosts.setLayoutManager(layoutManager);
         // query posts from Parstagram
-        queryPosts();
+        queryPosts(0);
 
         // lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
@@ -58,19 +61,37 @@ public class FeedActivity extends AppCompatActivity {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
+        // Endless scrolling
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextDataFromApi(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        binding.rvPosts.addOnScrollListener(scrollListener);
     }
 
     public void fetchTimelineAsync(int page) {
         adapter.clear();
-        queryPosts();
+        queryPosts(0);
         swipeContainer.setRefreshing(false);
     }
 
-    private void queryPosts() {
+    public void loadNextDataFromApi(int page) {
+        queryPosts(allPosts.size());
+    }
+
+    private void queryPosts(int skip) {
         // specify what type of data we want to query - Post.class
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         // include data referred by user key
         query.include(Post.KEY_USER);
+        // Skip the first n items
+        query.setSkip(skip);
         // limit query to latest 20 items
         query.setLimit(20);
         // order posts by creation date (newest first)
