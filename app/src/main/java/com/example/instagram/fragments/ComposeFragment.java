@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,9 +57,11 @@ public class ComposeFragment extends Fragment {
                     Toast.makeText(activity, "There is no image!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                binding.pbLoading.setVisibility(View.VISIBLE);
                 ParseUser currentUser = ParseUser.getCurrentUser();
                 savePost(description, currentUser, photoFile);
             });
+            binding.pbLoading.setVisibility(ProgressBar.INVISIBLE);
         }
     }
 
@@ -111,6 +114,7 @@ public class ComposeFragment extends Fragment {
 
     /* Saves a post to the parse database. */
     private void savePost(String description, ParseUser currentUser, File photoFile) {
+
         Post post = new Post();
         post.setDescription(description);
         post.setImage(new ParseFile(photoFile));
@@ -123,8 +127,10 @@ public class ComposeFragment extends Fragment {
 
             // Post was successfully saved
             Toast.makeText(activity, "Post saved!", Toast.LENGTH_SHORT).show();
+
             binding.etDescription.setText("");
             binding.ivPostImage.setImageResource(0);
+            binding.pbLoading.setVisibility(View.INVISIBLE);
         });
     }
 }
