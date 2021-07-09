@@ -20,76 +20,323 @@
             android:background="@color/white"
             app:titleTextColor="@color/black"
             app:layout_scrollFlags="scroll|enterAlways">
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="50dp"
-                android:src="@drawable/nav_logo_whiteout" />
 
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/ic_baseline_photo_camera_24"
+                    android:id="@+id/btnCamera"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New Post"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
 
                 <ProgressBar
                     android:id="@+id/pbLoading"
                     android:visibility="invisible"
-                    android:layout_toStartOf="@id/ivCreate"
+                    android:layout_toStartOf="@+id/tvShare"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_toStartOf="@id/ivLike"
-                    android:id="@+id/ivCreate"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/instagram_new_post_outline_24"/>
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:id="@+id/ivLike"
-                    android:layout_margin="10dp"
-                    android:layout_toStartOf="@id/ivShare"
-                    android:background="@drawable/ufi_heart"/>
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Share"
+                    android:id="@+id/tvShare"
                     android:layout_alignParentEnd="true"
-                    android:id="@+id/ivShare"
-                    android:background="@drawable/direct"/>
+                    android:layout_centerVertical="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/blue"
+                    android:textSize="22sp"/>
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
+
+    <ImageView
+        android:layout_width="98dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:layout_marginVertical="10dp"
+        android:layout_marginLeft="10dp"
+        android:maxHeight="98dp"
+        android:id="@+id/ivPostImage"
+        android:layout_below="@id/appBar"
+        tools:srcCompat="@tools:sample/avatars"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etDescription"
         android:layout_below="@id/appBar"
+        android:layout_toEndOf="@id/ivPostImage"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:gravity="top|left"
+        android:scrollbars="vertical"
+        android:layout_margin="10dp"
+        android:textSize="16sp"
+        android:background="@drawable/edit_text_background"
+        android:padding="10dp"
         android:ems="10"
-        android:hint="Description..."/>
+        android:hint="Write a caption..."/>
 
-    <Button
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnCaptureImage"
+        android:layout_height="1dp"
+        android:id="@+id/divider1"
         android:layout_below="@id/etDescription"
-        android:text="Take Picture"/>
+        android:background="@color/dark_gray" />
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/ivPostImage"
-        android:layout_below="@id/btnCaptureImage"
-        tools:srcCompat="@tools:sample/avatars"/>
-
-    <Button
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/btnSubmit"
-        android:layout_below="@id/ivPostImage"
-        android:text="Submit" />
+        android:id="@+id/rlTagPeople"
+        android:layout_below="@id/divider1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tag People"
+            android:layout_alignParentStart="true"
+            android:layout_margin="10dp"
+            android:textSize="16sp"
+            android:textColor="@color/black"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/ic_baseline_keyboard_arrow_right_24"
+            android:backgroundTint="@color/dark_gray"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/divider2"
+        android:layout_below="@id/rlTagPeople"
+        android:background="@color/dark_gray" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rlAddLocation"
+        android:layout_below="@id/divider2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Location"
+            android:layout_alignParentStart="true"
+            android:layout_margin="10dp"
+            android:textSize="16sp"
+            android:textColor="@color/black"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/ic_baseline_keyboard_arrow_right_24"
+            android:backgroundTint="@color/dark_gray"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/divider3"
+        android:layout_below="@id/rlAddLocation"
+        android:background="@color/dark_gray" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rlPostToOtherAccounts"
+        android:layout_below="@id/divider3">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Post to Other Accounts"
+            android:layout_alignParentStart="true"
+            android:layout_margin="10dp"
+            android:textSize="16sp"
+            android:textColor="@color/black"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/ic_baseline_keyboard_arrow_down_24"
+            android:backgroundTint="@color/dark_gray"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rlPostToOtherAccounts"
+        android:id="@+id/rlAccount">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:id="@+id/ivProfileImage"
+            android:layout_margin="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvUsername"
+            android:layout_toRightOf="@id/ivProfileImage"
+            android:text="callicallikun"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:layout_centerVertical="true"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/divider4"
+        android:layout_below="@id/rlAccount"
+        android:layout_marginTop="10dp"
+        android:background="@color/dark_gray" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider4"
+        android:id="@+id/rlFacebook">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:text="Facebook"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/switchFacebook"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:id="@+id/tvName"
+            android:text="Katherine Chen"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/switchFacebook"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rlFacebook"
+        android:id="@+id/rlTwitter">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:text="Twitter"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_centerVertical="true"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rlTwitter"
+        android:id="@+id/rlTumblr">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:text="Tumblr"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_centerVertical="true"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/divider5"
+        android:layout_below="@id/rlTumblr"
+        android:background="@color/dark_gray" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider5"
+        android:id="@+id/rlAdvancedSettings"
+        android:paddingVertical="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="10dp"
+            android:text="Advanced Settings"
+            android:textSize="12sp"
+            android:id="@+id/tvAdvancedSettings"
+            android:textColor="@color/dark_gray"
+            android:layout_centerVertical="true"/>
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/tvAdvancedSettings"
+            android:background="@drawable/ic_baseline_keyboard_arrow_right_24"
+            android:backgroundTint="@color/dark_gray"/>
+    </RelativeLayout>
 </RelativeLayout>

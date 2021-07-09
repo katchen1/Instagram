@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
 import com.example.instagram.R;
 import com.example.instagram.Utils;
 import com.example.instagram.databinding.FragmentComposeBinding;
@@ -42,13 +44,24 @@ public class ComposeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Launch the camera
+        launchCamera();
+
+        // Fill in the user's info
+        ParseFile photo = ParseUser.getCurrentUser().getParseFile("photo");
+        if (photo != null) {
+            Glide.with(this).load(photo.getUrl()).circleCrop().into(binding.ivProfileImage);
+        }
+        binding.tvUsername.setText(ParseUser.getCurrentUser().getUsername());
+        binding.tvName.setText(ParseUser.getCurrentUser().getString("name"));
+
         // Set up the button listeners
-        binding.btnCaptureImage.setOnClickListener(v -> launchCamera());
-        binding.btnSubmit.setOnClickListener(v -> {
+        binding.btnCamera.setOnClickListener(v -> launchCamera());
+        binding.tvShare.setOnClickListener(v -> {
             // Check if description is empty
             String description = binding.etDescription.getText().toString();
             if (description.isEmpty()) {
-                Toast.makeText(getContext(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Caption cannot be empty", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -87,8 +100,6 @@ public class ComposeFragment extends Fragment {
         if (requestCode == Utils.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
             binding.ivPostImage.setImageBitmap(takenImage);
-        } else {
-            Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
         }
     }
 
