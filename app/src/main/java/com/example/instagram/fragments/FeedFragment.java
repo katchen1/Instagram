@@ -5,12 +5,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.instagram.EndlessRecyclerViewScrollListener;
+import com.example.instagram.Utils;
 import com.example.instagram.databinding.FragmentFeedBinding;
 import com.example.instagram.models.Post;
 import com.example.instagram.adapters.PostsAdapter;
@@ -20,11 +23,10 @@ import java.util.List;
 
 public class FeedFragment extends Fragment {
 
-    public static final String TAG = "FeedFragment";
-    protected PostsAdapter adapter;
-    protected List<Post> allPosts;
-    FragmentFeedBinding binding;
-    EndlessRecyclerViewScrollListener scrollListener;
+    private final String TAG = "FeedFragment";
+    private FragmentFeedBinding binding;
+    private List<Post> allPosts; // posts that are shown in the recycler view
+    private PostsAdapter adapter; // adapter for the posts' recycler view
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -36,11 +38,21 @@ public class FeedFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Initialize the array that will hold posts and create a PostsAdapter
+        // Set up adapter and layout for recycler view
         allPosts = new ArrayList<>();
-        setLayoutManager();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        adapter = new PostsAdapter(getContext(), allPosts, 0, this);
+        binding.rvPosts.setLayoutManager(layoutManager);
         binding.rvPosts.setAdapter(adapter);
         queryPosts(0);
+
+        // Endless scrolling
+        binding.rvPosts.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                queryPosts(allPosts.size());
+            }
+        });
 
         // Setup refresh listener which triggers new data loading
         binding.swipeContainer.setOnRefreshListener(() -> {
@@ -48,27 +60,10 @@ public class FeedFragment extends Fragment {
             queryPosts(0);
             binding.swipeContainer.setRefreshing(false);
         });
-
-        // Configure the refreshing colors
         binding.swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
     }
 
-    protected void setLayoutManager() {
-        // Set up adapter and layout of recycler view
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        adapter = new PostsAdapter(getActivity(), allPosts, 0);
-        binding.rvPosts.setLayoutManager(layoutManager);
-
-        // Endless scrolling
-        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                queryPosts(allPosts.size());
-            }
-        };
-        binding.rvPosts.addOnScrollListener(scrollListener);
-    }
-
+    /* Queries the posts 20 at a time. Skips the first skip items. */
     public void queryPosts(int skip) {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class); // specify type of data
         query.include(Post.KEY_USER); // include data referred by user key
@@ -86,5 +81,15 @@ public class FeedFragment extends Fragment {
             allPosts.addAll(posts);
             adapter.notifyDataSetChanged();
         });
+    }
+
+    /* After returning from a post detail activity, update the post at the position. */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Utils.POST_DETAIL_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
+            int position = data.getIntExtra("position", -1);
+            allPosts.set(position, data.getParcelableExtra("post"));
+            adapter.notifyItemChanged(position);
+        }
     }
 }

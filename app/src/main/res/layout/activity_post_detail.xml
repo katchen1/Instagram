@@ -75,14 +75,16 @@
                     android:layout_height="30dp"
                     android:layout_margin="10dp"
                     android:background="@drawable/ufi_heart"
-                    android:id="@+id/btnLike"/>
+                    android:id="@+id/btnLike"
+                    android:onClick="btnLikeOnClick"/>
 
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_margin="10dp"
                     android:background="@drawable/ufi_comment"
-                    android:id="@+id/btnComment"/>
+                    android:id="@+id/btnComment"
+                    android:onClick="btnCommentOnClick"/>
 
                 <ImageView
                     android:layout_width="30dp"

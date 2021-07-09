@@ -1,15 +1,8 @@
 package com.example.instagram.models;
 
-import android.util.Log;
-
 import com.parse.ParseClassName;
-import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
-
-import org.parceler.Parcel;
-
-import java.util.Date;
 
 @ParseClassName("Like")
 public class Like extends ParseObject {
@@ -17,6 +10,16 @@ public class Like extends ParseObject {
     public static final String KEY_USER = "user";
     public static final String KEY_POST = "post";
 
+    /* Default constructor required for a ParseObject class. */
+    public Like() {}
+
+    /* Alternative constructor. */
+    public Like(ParseUser user, Post post) {
+        setUser(user);
+        setPost(post);
+    }
+
+    /* Getters and setters. */
     public ParseUser getUser() {
         return getParseUser(KEY_USER);
     }

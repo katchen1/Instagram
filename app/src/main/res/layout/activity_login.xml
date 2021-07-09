@@ -73,6 +73,7 @@
         android:layout_below="@id/btnLogin"
         android:layout_marginLeft="10dp"
         android:textStyle="bold"
+        android:onClick="loginOnClick"
         android:layout_marginRight="10dp"
         android:text="OR"/>
 

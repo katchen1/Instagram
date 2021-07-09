@@ -1,5 +1,6 @@
 package com.example.instagram.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,37 +13,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.instagram.EndlessRecyclerViewScrollListener;
+import com.example.instagram.Utils;
 import com.example.instagram.adapters.PostsAdapter;
 import com.example.instagram.databinding.FragmentProfileBinding;
 import com.example.instagram.models.Post;
-import com.example.instagram.models.User;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
-    public static final String TAG = "ProfileFragment";
-    protected PostsAdapter adapter;
-    protected List<Post> allPosts;
-    FragmentProfileBinding binding;
-    private File photoFile;
-    private String photoFileName = "photo.jpg";
-    public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
+    private final String TAG = "ProfileFragment";
+    private FragmentProfileBinding binding;
+    private ParseUser user; // the current user
+    private List<Post> allPosts; // posts shown in the recycler view
+    private PostsAdapter adapter; // adapter for the posts' recycler view
+    private File photoFile; // file for the user's uploaded profile picture
     EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
@@ -54,12 +51,30 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        user = ParseUser.getCurrentUser();
 
-        // Initialize the array that will hold posts and create a PostsAdapter
+        // Set up adapter and layout of recycler view
         allPosts = new ArrayList<>();
-        setLayoutManager();
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
+        adapter = new PostsAdapter(getContext(), allPosts, 1, this);
+        binding.rvPosts.setLayoutManager(layoutManager);
         binding.rvPosts.setAdapter(adapter);
         queryPosts(0);
+
+        // Endless scrolling
+        binding.rvPosts.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                queryPosts(allPosts.size());
+            }
+        });
+
+        // Set up  the user's basic info
+        binding.ivProfilePhoto.setOnClickListener(v -> launchCamera());
+        ParseFile photo = user.getParseFile("photo");
+        if (photo != null) {
+            Glide.with(this).load(photo.getUrl()).circleCrop().into(binding.ivProfilePhoto);
+        }
 
         // Setup refresh listener which triggers new data loading
         binding.swipeContainer.setOnRefreshListener(() -> {
@@ -67,78 +82,48 @@ public class ProfileFragment extends Fragment {
             queryPosts(0);
             binding.swipeContainer.setRefreshing(false);
         });
-
-        // Configure the refreshing colors
         binding.swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
-
-        Glide.with(this).load(ParseUser.getCurrentUser().getParseFile("photo").getUrl())
-                .into(binding.ivProfilePhoto);
-    }
-
-    protected void setLayoutManager() {
-        // Set up adapter and layout of recycler view
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
-        adapter = new PostsAdapter(getActivity(), allPosts, 1);
-        binding.rvPosts.setLayoutManager(layoutManager);
-
-        // Endless scrolling
-        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                queryPosts(allPosts.size());
-            }
-        };
-        binding.rvPosts.addOnScrollListener(scrollListener);
-
-        binding.ivProfilePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchCamera();
-            }
-        });
     }
 
     /* Launches the camera. */
     private void launchCamera() {
         // Create an intent to take picture and a file reference for future access
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        photoFile = getPhotoFileUri(photoFileName);
+        photoFile = getPhotoFileUri();
 
         // Wrap File object into a content provider
         Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.codepath.fileprovider", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
-        /* If you call startActivityForResult() using an intent that no app can handle, your app
-         * will crash. So as long as the result is not null, it's safe to use the intent. */
+        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+        // So as long as the result is not null, it's safe to use the intent.
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
-            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+            startActivityForResult(intent, Utils.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         }
     }
 
+    /* After returning from the camera, set the profile photo to be the image taken. */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == android.app.Activity.RESULT_OK) {
-                // by this point we have the camera photo on disk
-                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-                // RESIZE BITMAP, see section below
-                // Load the taken image into a preview
-                binding.ivProfilePhoto.setImageBitmap(takenImage);
-
-                if (photoFile == null) {
-                    Toast.makeText(getContext(), "There is no image!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                saveProfilePhoto(photoFile);
-            } else { // Result was a failure
-                Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+        if (requestCode == Utils.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (photoFile == null) {
+                Toast.makeText(getContext(), "There is no image!", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            // Update the image view and save the new profile photo to the Parse database
+            Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+            binding.ivProfilePhoto.setImageBitmap(takenImage);
+            user.put("photo", new ParseFile(photoFile));
+            user.saveInBackground();
+        } else {
+            Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
         }
     }
 
     /* Returns the File for a photo stored on disk given the fileName. */
-    private File getPhotoFileUri(String fileName) {
+    private File getPhotoFileUri() {
         // Get safe storage directory for photos
         File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
 
@@ -148,25 +133,10 @@ public class ProfileFragment extends Fragment {
         }
 
         // Return the file target for the photo based on filename
-        return new File(mediaStorageDir.getPath() + File.separator + fileName);
+        return new File(mediaStorageDir.getPath() + File.separator + "photo.jpg");
     }
 
-    /* Saves a profile photo to the parse database. */
-    private void saveProfilePhoto(File photoFile) {
-        ParseUser user = ParseUser.getCurrentUser();
-        ParseFile parseFile = new ParseFile(photoFile);
-        user.put("photo", parseFile);
-        user.saveInBackground(e -> {
-            // Check for errors
-            if (e != null) {
-                Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
-            }
-
-            // Post was successfully saved
-            Toast.makeText(getContext(), "Profile image saved!", Toast.LENGTH_SHORT).show();
-        });
-    }
-
+    /* Queries the posts 20 at a time. Skips the first skip items. */
     public void queryPosts(int skip) {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class); // specify type of data
         query.include(Post.KEY_USER); // include data referred by user key

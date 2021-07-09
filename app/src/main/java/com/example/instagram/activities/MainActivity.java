@@ -12,7 +12,7 @@ import com.example.instagram.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-    ActivityMainBinding binding;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,30 +22,30 @@ public class MainActivity extends AppCompatActivity {
 
         final FragmentManager fragmentManager = getSupportFragmentManager();
 
-        // define your fragments here
+        // Define fragments
         final Fragment fragment1 = new FeedFragment();
         final Fragment fragment2 = new ComposeFragment();
         final Fragment fragment3 = new ProfileFragment();
 
-        // handle navigation selection
-        binding.bottomNavigation.setOnNavigationItemSelectedListener(
-                item -> {
-                    Fragment fragment;
-                    switch (item.getItemId()) {
-                        case R.id.action_feed:
-                            fragment = fragment1;
-                            break;
-                        case R.id.action_capture:
-                            fragment = fragment2;
-                            break;
-                        case R.id.action_profile:
-                        default:
-                            fragment = fragment3;
-                            break;
-                    }
-                    fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
-                    return true;
-                });
+        // Handle navigation selection
+        binding.bottomNavigation.setOnNavigationItemSelectedListener(item -> {
+            Fragment fragment;
+            switch (item.getItemId()) {
+                case R.id.action_feed:
+                    fragment = fragment1;
+                    break;
+                case R.id.action_capture:
+                    fragment = fragment2;
+                    break;
+                case R.id.action_profile:
+                default:
+                    fragment = fragment3;
+                    break;
+            }
+            fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
+            return true;
+        });
+
         // Set default selection
         binding.bottomNavigation.setSelectedItemId(R.id.action_feed);
     }
