@@ -20,6 +20,7 @@ import com.example.instagram.R;
 import com.example.instagram.Utils;
 import com.example.instagram.activities.UserDetailActivity;
 import com.example.instagram.databinding.ItemPostImageBinding;
+import com.example.instagram.databinding.NewCommentBinding;
 import com.example.instagram.models.Comment;
 import com.example.instagram.models.Like;
 import com.example.instagram.models.Post;
@@ -174,15 +175,19 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         /* When the comment button is clicked, open a dialog for adding a comment. */
         public void btnCommentClicked(View v) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("New comment");
 
-            // Set up the input
-            final EditText input = new EditText(context);
-            input.setInputType(InputType.TYPE_CLASS_TEXT);
-            builder.setView(input);
+            // Set the custom layout
+            NewCommentBinding newCommentBinding = NewCommentBinding.inflate(LayoutInflater.from(context));
+            builder.setView(newCommentBinding.getRoot());
+            EditText input = newCommentBinding.editText;
+            ParseFile photo = ParseUser.getCurrentUser().getParseFile("photo");
+            if (photo != null) {
+                Glide.with(context).load(photo.getUrl()).circleCrop().into(newCommentBinding.ivProfileImage);
+            }
+            AlertDialog dialog = builder.show();
 
             // If the post button is clicked, create a new comment and add to the database
-            builder.setPositiveButton("Post", (dialog, which) -> {
+            newCommentBinding.btnPost.setOnClickListener(v1 -> {
                 Post post = posts.get(getAdapterPosition());
                 String text = input.getText().toString();
                 Comment comment = new Comment(ParseUser.getCurrentUser(), post, text);
@@ -203,10 +208,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                     onClick(v); // navigate to the post detail activity to see the new comment
                 });
             });
-
-            // If the cancel button is clicked, return to the activity
-            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-            builder.show();
         }
 
         /* When the like button is clicked, like or unlike the post. */

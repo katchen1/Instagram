@@ -16,6 +16,7 @@ import com.example.instagram.Utils;
 import com.example.instagram.adapters.CommentsAdapter;
 import com.example.instagram.R;
 import com.example.instagram.databinding.ActivityPostDetailBinding;
+import com.example.instagram.databinding.NewCommentBinding;
 import com.example.instagram.models.Comment;
 import com.example.instagram.models.Like;
 import com.example.instagram.models.Post;
@@ -170,15 +171,19 @@ public class PostDetailActivity extends AppCompatActivity {
     /* When the user clicks on the comment button, open a dialog to add a comment. */
     public void btnCommentOnClick(View v) {
         AlertDialog.Builder builder = new AlertDialog.Builder(PostDetailActivity.this);
-        builder.setTitle("New comment");
 
-        // Set up the input
-        final EditText input = new EditText(PostDetailActivity.this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
+        // Set the custom layout
+        NewCommentBinding newCommentBinding = NewCommentBinding.inflate(getLayoutInflater());
+        builder.setView(newCommentBinding.getRoot());
+        EditText input = newCommentBinding.editText;
+        ParseFile photo = ParseUser.getCurrentUser().getParseFile("photo");
+        if (photo != null) {
+            Glide.with(this).load(photo.getUrl()).circleCrop().into(newCommentBinding.ivProfileImage);
+        }
+        AlertDialog dialog = builder.show();
 
         // If the post button is clicked, create a new comment and add to the database
-        builder.setPositiveButton("Post", (dialog, which) -> {
+        newCommentBinding.btnPost.setOnClickListener(v1 -> {
             String text = input.getText().toString();
             Comment comment = new Comment(ParseUser.getCurrentUser(), post, text);
             comment.saveInBackground(e -> {
@@ -198,10 +203,6 @@ public class PostDetailActivity extends AppCompatActivity {
                 dialog.cancel();
             });
         });
-
-        // If the cancel button is clicked, return to the activity
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-        builder.show();
     }
 
     /* Passes the post back to the activity it came from. */
