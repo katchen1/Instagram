@@ -1,14 +1,19 @@
 package com.example.instagram.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.instagram.EndlessRecyclerViewScrollListener;
@@ -19,6 +24,7 @@ import com.example.instagram.models.Comment;
 import com.example.instagram.models.Post;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +71,54 @@ public class PostDetailActivity extends AppCompatActivity {
         setLayoutManager();
         binding.rvComments.setAdapter(adapter);
         queryComments(0);
+
+        // Commenting on the post
+        binding.btnComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(PostDetailActivity.this);
+                builder.setTitle("Add comment");
+
+                // Set up the input
+                final EditText input = new EditText(PostDetailActivity.this);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String text = input.getText().toString();
+                        Comment comment = new Comment();
+                        comment.setText(text);
+                        comment.setUser(ParseUser.getCurrentUser());
+                        comment.setPost(post);
+                        comment.saveInBackground(e -> {
+                            // Check for errors
+                            if (e != null) {
+                                e.printStackTrace();
+                                Toast.makeText(PostDetailActivity.this, "Error while saving!", Toast.LENGTH_SHORT).show();
+                            }
+
+                            // Post was successfully saved
+                            Toast.makeText(PostDetailActivity.this, "Comment saved!", Toast.LENGTH_SHORT).show();
+                            comments.add(0, comment);
+                            adapter.notifyItemInserted(0);
+                            dialog.cancel();
+                        });
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
     }
 
     protected void setLayoutManager() {

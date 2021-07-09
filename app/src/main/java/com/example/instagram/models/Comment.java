@@ -40,7 +40,7 @@ public class Comment extends ParseObject {
     }
 
     public void setPost(Post post) {
-        put(KEY_CREATED_AT, post);
+        put(KEY_POST, post);
     }
 
     public static String calculateTimeAgo(Date createdAt) {
