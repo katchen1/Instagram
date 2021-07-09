@@ -65,6 +65,7 @@ public class PostDetailActivity extends AppCompatActivity {
         };
         binding.ivProfileImage.setOnClickListener(listener);
         binding.tvUsername.setOnClickListener(listener);
+        binding.tvLikeInfo.setText(post.getNumLikes() + " likes");
 
         // Handling comments
         comments = new ArrayList<>();
