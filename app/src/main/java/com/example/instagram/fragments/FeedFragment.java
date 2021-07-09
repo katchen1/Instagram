@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,6 +47,10 @@ public class FeedFragment extends Fragment {
         binding.rvPosts.setLayoutManager(layoutManager);
         binding.rvPosts.setAdapter(adapter);
         queryPosts(0);
+
+        // Disable animation when notifyDataSetChanged is called
+        SimpleItemAnimator animator = (SimpleItemAnimator) binding.rvPosts.getItemAnimator();
+        if (animator != null) animator.setSupportsChangeAnimations(false);
 
         // Endless scrolling
         binding.rvPosts.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {

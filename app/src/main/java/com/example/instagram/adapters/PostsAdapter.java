@@ -16,14 +16,18 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.example.instagram.R;
 import com.example.instagram.Utils;
 import com.example.instagram.activities.UserDetailActivity;
 import com.example.instagram.databinding.ItemPostImageBinding;
 import com.example.instagram.models.Comment;
+import com.example.instagram.models.Like;
 import com.example.instagram.models.Post;
 import com.example.instagram.activities.PostDetailActivity;
 import com.example.instagram.databinding.ItemPostBinding;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import java.util.List;
 import java.util.Locale;
@@ -73,6 +77,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
         private ItemPostBinding itemPostBinding;
         private ItemPostImageBinding itemPostImageBinding;
+        private Like likeByCurrentUser;
 
         /* Constructor takes in a binding for the post's view and sets its onClick listener. */
         public ViewHolder(ItemPostBinding binding) {
@@ -94,6 +99,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
             // Set the action listeners
             binding.btnComment.setOnClickListener(this::btnCommentClicked);
+            binding.btnLike.setOnClickListener(this::btnLikeClicked);
         }
 
         /* Alternative constructor for grid layout. */
@@ -111,6 +117,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 itemPostBinding.tvDescription.setText(post.getDescription());
                 itemPostBinding.tvUsername.setText(post.getUser().getUsername());
                 itemPostBinding.tvLikeInfo.setText(String.format(Locale.US, "%d likes", post.getNumLikes()));
+                setupLikes(post);
 
                 // Fill in the post user's profile image
                 ParseFile profileImage = post.getUser().getParseFile("photo");
@@ -126,6 +133,26 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             if (image != null) {
                 Glide.with(context).load(image.getUrl()).into(ivImage);
             }
+        }
+
+        /* Handles info related to the post's likes. */
+        private void setupLikes(Post post) {
+            // Show the number of likes
+            itemPostBinding.tvLikeInfo.setText(String.format(Locale.US, "%d likes", post.getNumLikes()));
+
+            // Check if the post is liked by the current user
+            ParseQuery<Like> query = ParseQuery.getQuery(Like.class); // specify type of data
+            query.whereEqualTo(Like.KEY_POST, post); // limit to the current post
+            query.whereEqualTo(Like.KEY_USER, ParseUser.getCurrentUser()); // limit to the current user
+            query.getFirstInBackground((like, e) -> { // start async query for likes
+                // Fill in the image button according to the like status
+                likeByCurrentUser = like; // store the user's like in a variable for future access
+                if (e != null || like == null) {
+                    itemPostBinding.btnLike.setImageResource(R.drawable.ufi_heart);
+                } else {
+                    itemPostBinding.btnLike.setImageResource(R.drawable.ufi_heart_active);
+                }
+            });
         }
 
         /* When a post is clicked, show its details in a new activity. */
@@ -175,6 +202,47 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             // If the cancel button is clicked, return to the activity
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
             builder.show();
+        }
+
+        /* When the like button is clicked, like or unlike the post. */
+        public void btnLikeClicked(View v) {
+            int position = getAdapterPosition();
+            Post post = posts.get(position);
+
+            // Like
+            if (likeByCurrentUser == null) {
+                itemPostBinding.btnLike.setImageResource(R.drawable.ufi_heart_active);
+                Like like = new Like(ParseUser.getCurrentUser(), post);
+                like.saveInBackground(e -> {
+                    // Check for errors
+                    if (e != null) {
+                        Log.e(TAG, "Error while saving like", e);
+                        return;
+                    }
+
+                    // Like was successfully saved
+                    itemPostBinding.tvLikeInfo.setText(String.format(Locale.US, "%d likes", post.getNumLikes() + 1));
+                    notifyItemChanged(position);
+                    likeByCurrentUser = like;
+                    post.setNumLikes(post.getNumLikes() + 1); // increment post's number of likes
+                    post.saveInBackground();
+                });
+            }
+
+            // Unlike
+            else {
+                itemPostBinding.btnLike.setImageResource(R.drawable.ufi_heart);
+                try {
+                    likeByCurrentUser.delete(); // delete the row from the database
+                    likeByCurrentUser = null;
+                    itemPostBinding.tvLikeInfo.setText(String.format(Locale.US, "%d likes", post.getNumLikes() - 1));
+                    notifyItemChanged(position);
+                    post.setNumLikes(post.getNumLikes() - 1); // decrement post's number of likes
+                    post.saveInBackground();
+                } catch (ParseException e) {
+                    Log.e(TAG, "Parse exception", e);
+                }
+            }
         }
     }
 }
