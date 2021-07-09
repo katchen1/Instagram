@@ -119,6 +119,8 @@ public class ComposeFragment extends Fragment {
             Toast.makeText(getContext(), "Post saved", Toast.LENGTH_SHORT).show();
             binding.etDescription.setText("");
             binding.ivPostImage.setImageResource(0);
+            ParseUser.getCurrentUser().put("postCount", ParseUser.getCurrentUser().getInt("postCount") + 1);
+            ParseUser.getCurrentUser().saveInBackground();
             binding.pbLoading.setVisibility(View.INVISIBLE); // hide the intermediate progress bar
         });
     }

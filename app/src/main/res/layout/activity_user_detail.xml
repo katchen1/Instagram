@@ -193,17 +193,9 @@
                 android:layout_marginHorizontal="10dp"
                 android:id="@+id/tvBio"
                 android:textSize="16sp"
+                android:layout_marginBottom="10dp"
                 android:textColor="@color/black"
                 android:text="TAS 19 Stanford 23"/>
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Edit Profile"
-                android:textAllCaps="false"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/black" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPosts"
