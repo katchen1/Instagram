@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.example.instagram.EndlessRecyclerViewScrollListener;
 import com.example.instagram.Utils;
 import com.example.instagram.activities.LoginActivity;
+import com.example.instagram.activities.MainActivity;
 import com.example.instagram.adapters.PostsAdapter;
 import com.example.instagram.databinding.FragmentProfileBinding;
 import com.example.instagram.models.Post;
@@ -83,6 +84,7 @@ public class ProfileFragment extends Fragment {
         binding.tvPostCount.setText(String.format(Locale.US, "%d", user.getInt("postCount")));
         binding.tvFollowerCount.setText(String.format(Locale.US, "%d", user.getInt("followerCount")));
         binding.tvFollowingCount.setText(String.format(Locale.US, "%d", user.getInt("followingCount")));
+        binding.btnLogout.setOnClickListener(this::logoutOnClick);
 
         // Setup refresh listener which triggers new data loading
         binding.swipeContainer.setOnRefreshListener(() -> {
@@ -163,5 +165,13 @@ public class ProfileFragment extends Fragment {
             allPosts.addAll(posts);
             adapter.notifyDataSetChanged();
         });
+    }
+
+    /* When the user clicks log out button, log out and return to the login page. */
+    public void logoutOnClick(View v) {
+        ParseUser.logOut();
+        Intent i = new Intent(getContext(), LoginActivity.class);
+        startActivity(i);
+        getActivity().finish();
     }
 }

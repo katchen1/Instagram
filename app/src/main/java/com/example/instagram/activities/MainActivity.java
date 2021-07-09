@@ -3,12 +3,17 @@ package com.example.instagram.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+
 import com.example.instagram.R;
 import com.example.instagram.fragments.ComposeFragment;
 import com.example.instagram.fragments.FeedFragment;
 import com.example.instagram.fragments.ProfileFragment;
 import com.example.instagram.databinding.ActivityMainBinding;
+import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
 
