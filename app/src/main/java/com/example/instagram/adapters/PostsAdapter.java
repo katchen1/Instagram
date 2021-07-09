@@ -183,8 +183,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
             // If the post button is clicked, create a new comment and add to the database
             builder.setPositiveButton("Post", (dialog, which) -> {
+                Post post = posts.get(getAdapterPosition());
                 String text = input.getText().toString();
-                Comment comment = new Comment(ParseUser.getCurrentUser(), posts.get(getAdapterPosition()), text);
+                Comment comment = new Comment(ParseUser.getCurrentUser(), post, text);
                 comment.saveInBackground(e -> {
                     // Check for errors
                     if (e != null) {
@@ -194,6 +195,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
                     // Comment was successfully saved
                     Toast.makeText(input.getContext(), "Comment added", Toast.LENGTH_SHORT).show();
+
+                    // Increment the number of comments
+                    post.setNumComments(post.getNumComments() + 1);
+                    post.saveInBackground();
                     dialog.cancel(); // close dialog
                     onClick(v); // navigate to the post detail activity to see the new comment
                 });

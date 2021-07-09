@@ -191,6 +191,10 @@ public class PostDetailActivity extends AppCompatActivity {
                 // Comment was successfully saved
                 allComments.add(0, comment);
                 adapter.notifyItemInserted(0);
+
+                // Increment the number of comments
+                post.setNumComments(post.getNumComments() + 1);
+                post.saveInBackground();
                 dialog.cancel();
             });
         });
