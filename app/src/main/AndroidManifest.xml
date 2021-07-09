@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Instagram"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.UserDetailActivity"></activity>
         <activity android:name=".activities.PostDetailActivity" />
         <activity android:name=".fragments.FeedFragment" />
 

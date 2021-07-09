@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.example.instagram.activities.UserDetailActivity;
 import com.example.instagram.databinding.ItemPostImageBinding;
 import com.example.instagram.models.Post;
 import com.example.instagram.activities.PostDetailActivity;
@@ -65,6 +66,19 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             super(binding.getRoot());
             this.itemPostBinding = binding;
             binding.getRoot().setOnClickListener(this);
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        Intent intent = new Intent(context, UserDetailActivity.class);
+                        intent.putExtra("user", posts.get(position).getUser());
+                        context.startActivity(intent);
+                    }
+                }
+            };
+            binding.ivProfileImage.setOnClickListener(listener);
+            binding.tvUsername.setOnClickListener(listener);
         }
 
         /* Alternative constructor for profile fragment. */

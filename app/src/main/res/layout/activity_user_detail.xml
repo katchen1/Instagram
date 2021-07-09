@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ProfileFragment">
+    tools:context=".activities.UserDetailActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -108,8 +108,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/tvPostCount"
-                            android:gravity="center"
                             android:text="24"
+                            android:gravity="center"
                             android:textSize="20sp"
                             android:textColor="@color/black"
                             android:textStyle="bold"/>
