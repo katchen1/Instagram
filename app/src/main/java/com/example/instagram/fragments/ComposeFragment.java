@@ -17,9 +17,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import com.example.instagram.R;
 import com.example.instagram.Utils;
 import com.example.instagram.databinding.FragmentComposeBinding;
 import com.example.instagram.models.Post;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import java.io.File;
@@ -122,6 +124,10 @@ public class ComposeFragment extends Fragment {
             ParseUser.getCurrentUser().put("postCount", ParseUser.getCurrentUser().getInt("postCount") + 1);
             ParseUser.getCurrentUser().saveInBackground();
             binding.pbLoading.setVisibility(View.INVISIBLE); // hide the intermediate progress bar
+
+            // Return to the feed activity to see the new post
+            BottomNavigationView navigation = getActivity().findViewById(R.id.bottom_navigation);
+            navigation.setSelectedItemId(R.id.action_feed);
         });
     }
 }
