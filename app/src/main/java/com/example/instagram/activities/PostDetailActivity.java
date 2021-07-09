@@ -2,10 +2,12 @@ package com.example.instagram.activities;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -48,7 +50,8 @@ public class PostDetailActivity extends AppCompatActivity {
         post = getIntent().getParcelableExtra("post");
         position = getIntent().getIntExtra("position", -1);
         binding.tvUsername.setText(post.getUser().getUsername());
-        binding.tvDescription.setText(post.getDescription());
+        String description = "<b>" + post.getUser().getUsername() + "</b>  " + post.getDescription();
+        binding.tvDescription.setText(Html.fromHtml(description));
         binding.tvCreatedAt.setText(Utils.calculateTimeAgo(post.getCreatedAt()));
 
         // Show images
@@ -86,8 +89,10 @@ public class PostDetailActivity extends AppCompatActivity {
             likeByCurrentUser = like; // store the user's like in a variable for future access
             if (e != null || like == null) {
                 binding.btnLike.setImageResource(R.drawable.ufi_heart);
+                binding.btnLike.setColorFilter(ContextCompat.getColor(this, R.color.black));
             } else {
                 binding.btnLike.setImageResource(R.drawable.ufi_heart_active);
+                binding.btnLike.setColorFilter(ContextCompat.getColor(this, R.color.red));
             }
         });
     }
@@ -97,6 +102,7 @@ public class PostDetailActivity extends AppCompatActivity {
         // Like
         if (likeByCurrentUser == null) {
             binding.btnLike.setImageResource(R.drawable.ufi_heart_active);
+            binding.btnLike.setColorFilter(ContextCompat.getColor(this, R.color.red));
             Like like = new Like(ParseUser.getCurrentUser(), post);
             like.saveInBackground(e -> {
                 // Check for errors
@@ -116,6 +122,7 @@ public class PostDetailActivity extends AppCompatActivity {
         // Unlike
         else {
             binding.btnLike.setImageResource(R.drawable.ufi_heart);
+            binding.btnLike.setColorFilter(ContextCompat.getColor(this, R.color.black));
             try {
                 likeByCurrentUser.delete(); // delete the row from the database
                 likeByCurrentUser = null;

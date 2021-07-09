@@ -3,6 +3,7 @@ package com.example.instagram.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
@@ -115,9 +117,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             ImageView ivImage;
             if (mode == 0) { // linear layout
                 ivImage = itemPostBinding.ivImage;
-                itemPostBinding.tvDescription.setText(post.getDescription());
+                //itemPostBinding.tvDescription.setText(post.getDescription());
                 itemPostBinding.tvUsername.setText(post.getUser().getUsername());
+                String description = "<b>" + post.getUser().getUsername() + "</b>  " + post.getDescription();
+                itemPostBinding.tvDescription.setText(Html.fromHtml(description));
                 itemPostBinding.tvLikeInfo.setText(String.format(Locale.US, "%d likes", post.getNumLikes()));
+                itemPostBinding.tvSeeAllComments.setText(String.format(Locale.US, "See all %d comments", post.getNumComments()));
+                itemPostBinding.tvTimestamp.setText(Utils.calculateTimeAgo(post.getCreatedAt()));
                 setupLikes(post);
 
                 // Fill in the post user's profile image
@@ -150,8 +156,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 likeByCurrentUser = like; // store the user's like in a variable for future access
                 if (e != null || like == null) {
                     itemPostBinding.btnLike.setImageResource(R.drawable.ufi_heart);
+                    itemPostBinding.btnLike.setColorFilter(ContextCompat.getColor(context, R.color.black));
                 } else {
                     itemPostBinding.btnLike.setImageResource(R.drawable.ufi_heart_active);
+                    itemPostBinding.btnLike.setColorFilter(ContextCompat.getColor(context, R.color.red));
                 }
             });
         }
@@ -218,6 +226,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             // Like
             if (likeByCurrentUser == null) {
                 itemPostBinding.btnLike.setImageResource(R.drawable.ufi_heart_active);
+                itemPostBinding.btnLike.setColorFilter(ContextCompat.getColor(context, R.color.red));
                 Like like = new Like(ParseUser.getCurrentUser(), post);
                 like.saveInBackground(e -> {
                     // Check for errors
@@ -238,6 +247,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             // Unlike
             else {
                 itemPostBinding.btnLike.setImageResource(R.drawable.ufi_heart);
+                itemPostBinding.btnLike.setColorFilter(ContextCompat.getColor(context, R.color.black));
                 try {
                     likeByCurrentUser.delete(); // delete the row from the database
                     likeByCurrentUser = null;

@@ -20,6 +20,7 @@
             android:background="@color/white"
             app:titleTextColor="@color/black"
             app:layout_scrollFlags="scroll|enterAlways">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -196,27 +197,35 @@
                 android:textColor="@color/black"
                 android:text="TAS 19 Stanford 23"/>
 
-            <Button
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginHorizontal="10dp"
-                android:text="Edit Profile"
-                android:textAllCaps="false"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/black" />
+                android:orientation="horizontal"
+                android:weightSum="2">
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:id="@+id/btnLogout"
-                android:layout_marginBottom="10dp"
-                android:text="Log Out"
-                android:textAllCaps="false"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/black" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Edit Profile"
+                    android:textAllCaps="false"
+                    android:backgroundTint="@color/white"
+                    android:textColor="@color/black" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+                    android:id="@+id/btnLogout"
+                    android:text="Log Out"
+                    android:textAllCaps="false"
+                    android:backgroundTint="@color/white"
+                    android:textColor="@color/black" />
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvPosts"

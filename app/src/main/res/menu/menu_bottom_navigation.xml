@@ -6,18 +6,18 @@
         android:enabled="true"
         android:icon="@drawable/instagram_home_outline_24"
         android:checked="true"
-        android:title="Home"
+        android:title=""
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_capture"
         android:enabled="true"
         android:icon="@drawable/instagram_new_post_outline_24"
-        android:title="Capture"
+        android:title=""
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_profile"
         android:enabled="true"
         android:icon="@drawable/instagram_user_outline_24"
-        android:title="Profile"
+        android:title=""
         app:showAsAction="ifRoom" />
 </menu>

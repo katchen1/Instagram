@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.example.instagram.Utils;
 import com.example.instagram.activities.UserDetailActivity;
 import com.example.instagram.databinding.ItemCommentBinding;
 import com.example.instagram.models.Comment;
@@ -77,6 +78,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             try {
                 String username = comment.getUser().fetchIfNeeded().getString("username");
                 binding.tvUsername.setText(username);
+                binding.tvTimestamp.setText(Utils.calculateTimeAgo(comment.getCreatedAt()));
                 ParseFile photo = comment.getUser().fetchIfNeeded().getParseFile("photo");
                 if (photo != null) {
                     Glide.with(context).load(photo.getUrl()).circleCrop().into(binding.ivProfileImage);
