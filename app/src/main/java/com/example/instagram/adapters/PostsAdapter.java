@@ -1,21 +1,29 @@
 package com.example.instagram.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.instagram.activities.UserDetailActivity;
 import com.example.instagram.databinding.ItemPostImageBinding;
+import com.example.instagram.models.Comment;
 import com.example.instagram.models.Post;
 import com.example.instagram.activities.PostDetailActivity;
 import com.example.instagram.databinding.ItemPostBinding;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
+
 import java.util.List;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
@@ -79,6 +87,55 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             };
             binding.ivProfileImage.setOnClickListener(listener);
             binding.tvUsername.setOnClickListener(listener);
+
+            // Commenting on the post
+            binding.btnComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("Add comment");
+
+                    // Set up the input
+                    final EditText input = new EditText(context);
+                    // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    builder.setView(input);
+
+                    // Set up the buttons
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String text = input.getText().toString();
+                            Comment comment = new Comment();
+                            comment.setText(text);
+                            comment.setUser(ParseUser.getCurrentUser());
+                            comment.setPost(posts.get(getAdapterPosition()));
+                            comment.saveInBackground(e -> {
+                                // Check for errors
+                                if (e != null) {
+                                    e.printStackTrace();
+                                    Toast.makeText(input.getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                                }
+
+                                // Post was successfully saved
+                                Toast.makeText(input.getContext(), "Comment saved!", Toast.LENGTH_SHORT).show();
+                                dialog.cancel();
+                                Intent intent = new Intent(context, PostDetailActivity.class);
+                                intent.putExtra("post", posts.get(getAdapterPosition()));
+                                context.startActivity(intent);
+                            });
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    builder.show();
+                }
+            });
         }
 
         /* Alternative constructor for profile fragment. */
