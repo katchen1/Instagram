@@ -122,7 +122,14 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 String description = "<b>" + post.getUser().getUsername() + "</b>  " + post.getDescription();
                 itemPostBinding.tvDescription.setText(Html.fromHtml(description));
                 itemPostBinding.tvLikeInfo.setText(String.format(Locale.US, "%d likes", post.getNumLikes()));
-                itemPostBinding.tvSeeAllComments.setText(String.format(Locale.US, "See all %d comments", post.getNumComments()));
+                Integer numComments = post.getNumComments();
+                String commentInfo = "";
+                if (numComments == 0) {
+                    commentInfo = "No comments";
+                } else {
+                    commentInfo = "See all " + numComments + " comments";
+                }
+                itemPostBinding.tvSeeAllComments.setText(commentInfo);
                 itemPostBinding.tvTimestamp.setText(Utils.calculateTimeAgo(post.getCreatedAt()));
                 setupLikes(post);
 
