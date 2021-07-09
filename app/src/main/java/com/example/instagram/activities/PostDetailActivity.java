@@ -19,9 +19,12 @@ import com.bumptech.glide.Glide;
 import com.example.instagram.EndlessRecyclerViewScrollListener;
 import com.example.instagram.adapters.CommentsAdapter;
 import com.example.instagram.adapters.PostsAdapter;
+import com.example.instagram.R;
 import com.example.instagram.databinding.ActivityPostDetailBinding;
 import com.example.instagram.models.Comment;
+import com.example.instagram.models.Like;
 import com.example.instagram.models.Post;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -65,7 +68,22 @@ public class PostDetailActivity extends AppCompatActivity {
         };
         binding.ivProfileImage.setOnClickListener(listener);
         binding.tvUsername.setOnClickListener(listener);
+
+        // Display like info
         binding.tvLikeInfo.setText(post.getNumLikes() + " likes");
+        ParseQuery<Like> query = ParseQuery.getQuery(Like.class); // specify type of data
+        query.setLimit(1); // limit query to 20 items
+        query.whereEqualTo(Like.KEY_POST, post); // limit comments to current post's
+        query.whereEqualTo(Like.KEY_USER, ParseUser.getCurrentUser());
+        query.findInBackground((likes, e) -> { // start async query for posts
+            // Check for errors
+            if (e != null) {
+                Log.e("ERROR", "Issue with getting posts", e);
+                return;
+            }
+            if (likes.size() >= 1) binding.btnLike.setImageResource(R.drawable.ufi_heart_active);
+            else binding.btnLike.setImageResource(R.drawable.ufi_heart);
+        });
 
         // Handling comments
         comments = new ArrayList<>();
@@ -118,6 +136,79 @@ public class PostDetailActivity extends AppCompatActivity {
                 });
 
                 builder.show();
+            }
+        });
+
+        // Liking the post
+        binding.btnLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseQuery<Like> query = ParseQuery.getQuery(Like.class); // specify type of data
+                query.setLimit(1); // limit query to 20 items
+                query.whereEqualTo(Like.KEY_POST, post); // limit comments to current post's
+                query.whereEqualTo(Like.KEY_USER, ParseUser.getCurrentUser());
+                query.findInBackground((likes, e) -> { // start async query for posts
+                    // Check for errors
+                    if (e != null) {
+                        Log.e("ERROR", "Issue with getting posts", e);
+                        return;
+                    }
+
+                    // User hasn't liked the post
+                    if (likes.isEmpty()) {
+                        binding.btnLike.setImageResource(R.drawable.ufi_heart_active);
+                        Like like = new Like();
+                        like.setPost(post);
+                        like.setUser(ParseUser.getCurrentUser());
+                        like.saveInBackground(e1 -> {
+                            // Check for errors
+                            if (e1 != null) {
+                                e1.printStackTrace();
+                                Toast.makeText(PostDetailActivity.this, "Error while saving!", Toast.LENGTH_SHORT).show();
+                            }
+
+                            // Post was successfully saved
+                            post.setNumLikes(post.getNumLikes() + 1);
+                            post.saveInBackground(e2 -> {
+                                // Check for errors
+                                if (e2 != null) {
+                                    e2.printStackTrace();
+                                    Toast.makeText(PostDetailActivity.this, "Error while saving!", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                // Post was successfully saved
+                                Toast.makeText(PostDetailActivity.this, "Post saved!", Toast.LENGTH_SHORT).show();
+                                binding.tvLikeInfo.setText(post.getNumLikes() + " likes");
+                            });
+                            Toast.makeText(PostDetailActivity.this, "Like saved!", Toast.LENGTH_SHORT).show();
+                        });
+                    }
+
+                    // User has already liked the post
+                    else {
+                        binding.btnLike.setImageResource(R.drawable.ufi_heart);
+                        try {
+                            likes.get(0).delete();
+                            Toast.makeText(PostDetailActivity.this, "Deleted like!", Toast.LENGTH_SHORT).show();
+                            post.setNumLikes(post.getNumLikes() - 1);
+                            post.saveInBackground(e1 -> {
+                                // Check for errors
+                                if (e1 != null) {
+                                    e1.printStackTrace();
+                                    Toast.makeText(PostDetailActivity.this, "Error while saving!", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                // Post was successfully saved
+                                Toast.makeText(PostDetailActivity.this, "Post saved!", Toast.LENGTH_SHORT).show();
+                                binding.tvLikeInfo.setText(post.getNumLikes() + " likes");
+                            });
+                        } catch (ParseException parseException) {
+                            parseException.printStackTrace();
+                        }
+                    }
+                });
             }
         });
     }
