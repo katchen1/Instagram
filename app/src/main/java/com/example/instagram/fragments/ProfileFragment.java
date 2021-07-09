@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.instagram.EndlessRecyclerViewScrollListener;
 import com.example.instagram.Utils;
+import com.example.instagram.activities.LoginActivity;
 import com.example.instagram.adapters.PostsAdapter;
 import com.example.instagram.databinding.FragmentProfileBinding;
 import com.example.instagram.models.Post;
@@ -31,6 +32,7 @@ import com.parse.ParseUser;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ProfileFragment extends Fragment {
 
@@ -75,6 +77,12 @@ public class ProfileFragment extends Fragment {
         if (photo != null) {
             Glide.with(this).load(photo.getUrl()).circleCrop().into(binding.ivProfilePhoto);
         }
+        binding.tvUsernameToolbar.setText(user.getUsername());
+        binding.tvName.setText(user.getString("name"));
+        binding.tvBio.setText(user.getString("bio"));
+        binding.tvPostCount.setText(String.format(Locale.US, "%d", user.getInt("postCount")));
+        binding.tvFollowerCount.setText(String.format(Locale.US, "%d", user.getInt("followerCount")));
+        binding.tvFollowingCount.setText(String.format(Locale.US, "%d", user.getInt("followingCount")));
 
         // Setup refresh listener which triggers new data loading
         binding.swipeContainer.setOnRefreshListener(() -> {

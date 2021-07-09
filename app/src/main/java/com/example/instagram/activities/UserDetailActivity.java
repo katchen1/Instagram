@@ -15,6 +15,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class UserDetailActivity extends AppCompatActivity {
 
@@ -36,6 +37,12 @@ public class UserDetailActivity extends AppCompatActivity {
         if (profileImage != null) {
             Glide.with(this).load(profileImage.getUrl()).circleCrop().into(binding.ivProfilePhoto);
         }
+        binding.tvUsernameToolbar.setText(user.getUsername());
+        binding.tvName.setText(user.getString("name"));
+        binding.tvBio.setText(user.getString("bio"));
+        binding.tvPostCount.setText(String.format(Locale.US, "%d", user.getInt("postCount")));
+        binding.tvFollowerCount.setText(String.format(Locale.US, "%d", user.getInt("followerCount")));
+        binding.tvFollowingCount.setText(String.format(Locale.US, "%d", user.getInt("followingCount")));
 
         // Set up adapter and layout of recycler view
         allPosts = new ArrayList<>();

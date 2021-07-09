@@ -58,6 +58,7 @@
         android:id="@+id/btnLogin"
         android:layout_below="@id/tvForgotPassword"
         android:textAllCaps="false"
+        android:onClick="loginOnClick"
         android:text="Log In"
         android:backgroundTint="@color/blue"
         android:minHeight="60dp"
@@ -73,7 +74,6 @@
         android:layout_below="@id/btnLogin"
         android:layout_marginLeft="10dp"
         android:textStyle="bold"
-        android:onClick="loginOnClick"
         android:layout_marginRight="10dp"
         android:text="OR"/>
 
