@@ -81,6 +81,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 itemPostBinding.tvDescription.setText(post.getDescription());
                 itemPostBinding.tvUsername.setText(post.getUser().getUsername());
                 ivImage = itemPostBinding.ivImage;
+                Glide.with(context).load(post.getUser().getParseFile("photo").getUrl()).circleCrop().into(itemPostBinding.ivProfileImage);
             } else {
                 ivImage = itemPostImageBinding.ivImage;
             }

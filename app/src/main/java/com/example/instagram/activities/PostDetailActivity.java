@@ -26,5 +26,6 @@ public class PostDetailActivity extends AppCompatActivity {
         binding.tvDescription.setText(post.getDescription());
         binding.tvCreatedAt.setText(Post.calculateTimeAgo(post.getCreatedAt()));
         binding.tvUsername.setText(post.getUser().getUsername());
+        Glide.with(this).load(post.getUser().getParseFile("photo").getUrl()).circleCrop().into(binding.ivProfileImage);
     }
 }
