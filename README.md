@@ -2,7 +2,7 @@
 
 **Instagram** is a photo sharing app using Parse as its backend.
 
-Time spent: **X** hours spent in total
+Time spent: **21** hours spent in total
 
 ## User Stories
 
@@ -39,18 +39,23 @@ The following **stretch** features are implemented:
 
 The following **additional** features are implemented:
 
-- [ ] List anything else that you can get done to improve the app functionality!
+- [x] User can comment on a post and see the number of comments for each post in the home feed
+- [x] User can like a post and see the number of likes for each post in the home feed
+- [x] User can add and edit their name and bio
+- [x] User can see the "Likes" of each post (a list of user who liked it) by clicking the number of likes from both the home feed and the post details screen
+- [x] User can click a user in the "Likes" list to view their profile
+- [x] Signup screen has a confirm password feature which forces user to type the same password twice 
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1.
-2.
+1. How to implement tagging other users in photos
+2. How to implement adding location to posts
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='walklthrough_final.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [Kap](https://getkap.co/).
 
@@ -63,7 +68,7 @@ List an 3rd party libraries, icons, graphics, or other assets you used in your a
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+I was unfamiliar with using fragments, specifically, passing data from an adapter to a fragment, or passing data from an activity to a fragment, or vice versa. I read through the documentation on Android fragments to understand them better. After completing this assignment, I feel much more comfortable using them.
 
 ## License
 
