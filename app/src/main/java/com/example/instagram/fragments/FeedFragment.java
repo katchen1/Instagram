@@ -71,6 +71,7 @@ public class FeedFragment extends Fragment {
 
     /* Queries the posts 20 at a time. Skips the first skip items. */
     public void queryPosts(int skip) {
+        binding.pbLoading.setVisibility(View.VISIBLE); // show the intermediate progress bar
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class); // specify type of data
         query.include(Post.KEY_USER); // include data referred by user key
         query.setSkip(skip); // skip the first skip items
@@ -80,12 +81,14 @@ public class FeedFragment extends Fragment {
             // Check for errors
             if (e != null) {
                 Log.e(TAG, "Issue with getting posts", e);
+                binding.pbLoading.setVisibility(View.INVISIBLE); // hide the intermediate progress bar
                 return;
             }
 
             // Save received posts to list and notify adapter of new data
             allPosts.addAll(posts);
             adapter.notifyDataSetChanged();
+            binding.pbLoading.setVisibility(View.INVISIBLE); // hide the intermediate progress bar
         });
     }
 

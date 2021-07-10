@@ -157,6 +157,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     /* Queries the current post's comments 20 at a time. Skips the first skip items. */
     public void queryComments(int skip) {
+        binding.pbLoading.setVisibility(View.VISIBLE); // show the intermediate progress bar
         ParseQuery<Comment> query = ParseQuery.getQuery(Comment.class); // specify type of data
         query.include(Comment.KEY_POST); // include data referred by user key
         query.setSkip(skip); // skip the first skip items
@@ -167,12 +168,14 @@ public class PostDetailActivity extends AppCompatActivity {
             // Check for errors
             if (e != null) {
                 Log.e(TAG, "Issue with getting comments", e);
+                binding.pbLoading.setVisibility(View.INVISIBLE); // hide the intermediate progress bar
                 return;
             }
 
             // Save received comments to list and notify adapter of new data
             allComments.addAll(comments);
             adapter.notifyDataSetChanged();
+            binding.pbLoading.setVisibility(View.INVISIBLE); // hide the intermediate progress bar
         });
     }
 

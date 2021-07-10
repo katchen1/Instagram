@@ -15,7 +15,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp">
 
             <ImageView
                 android:layout_width="40dp"
@@ -41,6 +42,15 @@
                 android:textColor="@color/black"
                 android:text="katherine"
                 tools:text="katherine" />
+
+            <ProgressBar
+                android:id="@+id/pbLoading"
+                android:visibility="invisible"
+                android:layout_toStartOf="@+id/btnMore"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
 
             <ImageView
                 android:layout_width="wrap_content"

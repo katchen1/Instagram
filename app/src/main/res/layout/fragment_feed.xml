@@ -20,6 +20,7 @@
             android:background="@color/white"
             app:titleTextColor="@color/black"
             app:layout_scrollFlags="scroll|enterAlways">
+
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="50dp"
@@ -29,6 +30,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:orientation="horizontal">
+
+                <ProgressBar
+                    android:id="@+id/pbLoading"
+                    android:visibility="invisible"
+                    android:layout_toStartOf="@+id/ivCreate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
                 <ImageView
                     android:layout_width="30dp"
