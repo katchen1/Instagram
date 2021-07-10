@@ -116,6 +116,8 @@ public class ProfileFragment extends Fragment {
 
         // If the update button is clicked, save the bio
         newCommentBinding.btnPost.setText("Update Bio");
+        input.setHint("Enter your bio...");
+        input.setText(ParseUser.getCurrentUser().getString("bio"));
         newCommentBinding.btnPost.setOnClickListener(v1 -> {
             String bio = input.getText().toString();
             binding.tvBio.setText(bio);
