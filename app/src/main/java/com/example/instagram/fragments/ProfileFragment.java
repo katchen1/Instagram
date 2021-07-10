@@ -12,9 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -23,8 +25,11 @@ import com.bumptech.glide.Glide;
 import com.example.instagram.EndlessRecyclerViewScrollListener;
 import com.example.instagram.Utils;
 import com.example.instagram.activities.LoginActivity;
+import com.example.instagram.activities.PostDetailActivity;
 import com.example.instagram.adapters.PostsAdapter;
 import com.example.instagram.databinding.FragmentProfileBinding;
+import com.example.instagram.databinding.NewCommentBinding;
+import com.example.instagram.models.Comment;
 import com.example.instagram.models.Post;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
@@ -84,6 +89,7 @@ public class ProfileFragment extends Fragment {
         binding.tvFollowerCount.setText(String.format(Locale.US, "%d", user.getInt("followerCount")));
         binding.tvFollowingCount.setText(String.format(Locale.US, "%d", user.getInt("followingCount")));
         binding.btnLogout.setOnClickListener(this::logoutOnClick);
+        binding.btnEditBio.setOnClickListener(this::editBioOnClick);
 
         // Setup refresh listener which triggers new data loading
         binding.swipeContainer.setOnRefreshListener(() -> {
@@ -92,6 +98,38 @@ public class ProfileFragment extends Fragment {
             binding.swipeContainer.setRefreshing(false);
         });
         binding.swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
+    }
+
+    /* Launches a dialog to edit the user's bio. */
+    private void editBioOnClick(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        // Set the custom layout
+        NewCommentBinding newCommentBinding = NewCommentBinding.inflate(getLayoutInflater());
+        builder.setView(newCommentBinding.getRoot());
+        EditText input = newCommentBinding.editText;
+        ParseFile photo = ParseUser.getCurrentUser().getParseFile("photo");
+        if (photo != null) {
+            Glide.with(this).load(photo.getUrl()).circleCrop().into(newCommentBinding.ivProfileImage);
+        }
+        AlertDialog dialog = builder.show();
+
+        // If the update button is clicked, save the bio
+        newCommentBinding.btnPost.setText("Update Bio");
+        newCommentBinding.btnPost.setOnClickListener(v1 -> {
+            String bio = input.getText().toString();
+            binding.tvBio.setText(bio);
+            ParseUser.getCurrentUser().put("bio", bio);
+            ParseUser.getCurrentUser().saveInBackground(e -> {
+                // Check for errors
+                if (e != null) {
+                    Log.e(TAG, "Error while saving bio", e);
+                    return;
+                }
+                Toast.makeText(getContext(), "Bio updated", Toast.LENGTH_SHORT).show();
+            });
+            dialog.cancel();
+        });
     }
 
     /* Launches the camera. */

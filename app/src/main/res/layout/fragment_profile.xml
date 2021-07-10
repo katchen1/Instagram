@@ -213,9 +213,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:id="@+id/btnEditBio"
                     android:layout_marginVertical="10dp"
                     android:layout_marginHorizontal="10dp"
-                    android:text="Edit Profile"
+                    android:text="Edit Bio"
                     android:textAllCaps="false"
                     android:backgroundTint="@color/white"
                     android:textColor="@color/black" />
