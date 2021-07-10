@@ -9,11 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
-import com.example.instagram.Utils;
 import com.example.instagram.activities.UserDetailActivity;
-import com.example.instagram.databinding.ItemCommentBinding;
 import com.example.instagram.databinding.ItemUserBinding;
-import com.example.instagram.models.Comment;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -80,6 +77,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
             }
         }
 
+        /* Navigates to the user detail activity for the user clicked. */
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();

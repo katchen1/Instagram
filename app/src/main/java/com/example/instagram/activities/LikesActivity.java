@@ -3,21 +3,16 @@ package com.example.instagram.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-
 import com.example.instagram.EndlessRecyclerViewScrollListener;
-import com.example.instagram.adapters.CommentsAdapter;
 import com.example.instagram.adapters.UsersAdapter;
 import com.example.instagram.databinding.ActivityLikesBinding;
-import com.example.instagram.models.Comment;
 import com.example.instagram.models.Like;
 import com.example.instagram.models.Post;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-
 import java.util.ArrayList;
 import java.util.List;
 

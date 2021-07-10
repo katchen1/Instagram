@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-
 import com.bumptech.glide.Glide;
 import com.example.instagram.EndlessRecyclerViewScrollListener;
 import com.example.instagram.adapters.PostsAdapter;
