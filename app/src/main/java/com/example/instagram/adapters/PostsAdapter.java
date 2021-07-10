@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.instagram.R;
 import com.example.instagram.Utils;
+import com.example.instagram.activities.LikesActivity;
 import com.example.instagram.activities.UserDetailActivity;
 import com.example.instagram.databinding.ItemPostImageBinding;
 import com.example.instagram.databinding.NewCommentBinding;
@@ -117,7 +118,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             ImageView ivImage;
             if (mode == 0) { // linear layout
                 ivImage = itemPostBinding.ivImage;
-                //itemPostBinding.tvDescription.setText(post.getDescription());
                 itemPostBinding.tvUsername.setText(post.getUser().getUsername());
                 String description = "<b>" + post.getUser().getUsername() + "</b>  " + post.getDescription();
                 itemPostBinding.tvDescription.setText(Html.fromHtml(description));
@@ -153,6 +153,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         private void setupLikes(Post post) {
             // Show the number of likes
             itemPostBinding.tvLikeInfo.setText(String.format(Locale.US, "%d likes", post.getNumLikes()));
+            itemPostBinding.tvLikeInfo.setOnClickListener(this::goToLikes);
 
             // Check if the post is liked by the current user
             ParseQuery<Like> query = ParseQuery.getQuery(Like.class); // specify type of data
@@ -169,6 +170,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                     itemPostBinding.btnLike.setColorFilter(ContextCompat.getColor(context, R.color.red));
                 }
             });
+        }
+
+        /* Navigates to the likes activity to show the users who liked this post. */
+        private void goToLikes(View view) {
+            Intent intent = new Intent(context, LikesActivity.class);
+            intent.putExtra("post", posts.get(getAdapterPosition()));
+            context.startActivity(intent);
         }
 
         /* When a post is clicked, show its details in a new activity. */

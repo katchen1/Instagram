@@ -79,6 +79,7 @@ public class PostDetailActivity extends AppCompatActivity {
     public void setupLikes() {
         // Show the number of likes
         binding.tvLikeInfo.setText(String.format(Locale.US, "%d likes", post.getNumLikes()));
+        binding.tvLikeInfo.setOnClickListener(this::goToLikes);
 
         // Check if the post is liked by the current user
         ParseQuery<Like> query = ParseQuery.getQuery(Like.class); // specify type of data
@@ -210,6 +211,13 @@ public class PostDetailActivity extends AppCompatActivity {
                 dialog.cancel();
             });
         });
+    }
+
+    /* Navigates to the likes activity to show the post's likes. */
+    public void goToLikes(View view) {
+        Intent intent = new Intent(PostDetailActivity.this, LikesActivity.class);
+        intent.putExtra("post", post);
+        startActivity(intent);
     }
 
     /* Passes the post back to the activity it came from. */
