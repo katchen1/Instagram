@@ -46,6 +46,14 @@ public class LikesActivity extends AppCompatActivity {
                 queryLikeUsers(users.size());
             }
         });
+
+        // Setup refresh listener which triggers new data loading
+        binding.swipeContainer.setOnRefreshListener(() -> {
+            users.clear();
+            queryLikeUsers(0);
+            binding.swipeContainer.setRefreshing(false);
+        });
+        binding.swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright);
     }
 
     /* Queries the current post's likes 20 at a time and adds their users to the list.
