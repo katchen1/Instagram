@@ -18,6 +18,7 @@
         <activity android:name=".activities.LikesActivity"></activity>
         <activity android:name=".activities.UserDetailActivity" />
         <activity android:name=".activities.PostDetailActivity" />
+        <activity android:name=".activities.SignupActivity" />
         <activity android:name=".fragments.FeedFragment" />
 
         <provider

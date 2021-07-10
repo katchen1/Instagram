@@ -40,6 +40,12 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    public void gotoSignupOnClick(View view) {
+        Intent i = new Intent(LoginActivity.this, SignupActivity.class);
+        startActivity(i);
+        finish();
+    }
+
     /* Navigates to the main activity. */
     private void goMainActivity() {
         Intent i = new Intent(LoginActivity.this, MainActivity.class);

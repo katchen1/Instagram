@@ -18,13 +18,25 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etUsername"
+        android:id="@+id/etName"
         android:layout_below="@id/ivLogo"
+        android:background="@drawable/edit_text_background"
+        android:hint="Name"
+        android:minHeight="50dp"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etUsername"
+        android:layout_below="@id/etName"
         android:background="@drawable/edit_text_background"
         android:hint="Username"
         android:minHeight="50dp"
         android:textSize="18sp"
-        android:layout_marginTop="20dp"/>
+
+        android:layout_marginTop="10dp"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -40,82 +52,33 @@
         android:textSize="18sp"
         android:layout_marginTop="10dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <EditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/tvForgotPassword"
-        android:text="Forgot password?"
+        android:id="@+id/etConfirmPassword"
+        android:layout_below="@id/etPassword"
+        android:background="@drawable/edit_text_background"
+        android:hint="Confirm password"
+        app:endIconMode="password_toggle"
+        android:inputType="textPassword"
+        android:drawableRight="@drawable/ic_baseline_visibility_off_24"
+        android:minHeight="50dp"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/blue"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/etPassword"/>
+        android:layout_marginTop="10dp"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btnLogin"
-        android:layout_below="@id/tvForgotPassword"
+        android:layout_below="@id/etConfirmPassword"
         android:textAllCaps="false"
-        android:onClick="loginOnClick"
-        android:text="Log In"
+        android:onClick="signupOnClick"
+        android:text="Sign Up"
         android:backgroundTint="@color/blue"
         android:minHeight="60dp"
         android:textSize="18sp"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="5dp"/>
-
-    <TextView
-        android:id="@+id/tvOr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/btnLogin"
-        android:layout_marginLeft="10dp"
-        android:textStyle="bold"
-        android:layout_marginRight="10dp"
-        android:text="OR"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/btnLogin"
-        android:layout_marginTop="10dp"
-        android:layout_toStartOf="@id/tvOr"
-        android:background="@color/dark_gray" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:layout_toEndOf="@id/tvOr"
-        android:layout_below="@id/btnLogin"
-        android:background="@color/dark_gray" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvOr"
-        android:layout_marginTop="10dp"
-        android:id="@+id/llContinueWithFacebook"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="@drawable/facebook"/>
-
-        <TextView
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Continue with Facebook"
-            android:textStyle="bold"
-            android:textColor="@color/blue"
-            android:textSize="18sp"/>
-    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -138,19 +101,17 @@
             android:layout_marginLeft="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Don't have an account?"
+            android:text="Already have an account?"
             android:textSize="18sp"/>
 
         <TextView
             android:layout_marginLeft="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign up."
+            android:text="Log in."
             android:textStyle="bold"
             android:textColor="@color/blue"
-            android:onClick="gotoSignupOnClick"
+            android:onClick="gotoLoginOnClick"
             android:textSize="18sp"/>
     </LinearLayout>
-
-
 </RelativeLayout>
